@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: stg_taxi_zones
+    description: "Staging table untuk lookup zona taksi (hasil pembersihan dari seed CSV)."
+    columns:
+      - name: location_id
+        description: "ID unik zona (LocationID dari lookup CSV)."
+        tests:
+          - not_null
+          - unique
+
+      - name: zone_name
+        description: "Nama zona bersih (contoh: 'Midtown Center')."
+        tests:
+          - not_null
+
+  - name: stg_taxi_trips
+    description: "Data mentah hasil pembersihan untuk setiap perjalanan taksi."
+    columns:
+      - name: pickup_datetime
+        tests:
+          - not_null
+
+      - name: dropoff_datetime
+        tests:
+          - not_null
+
+      - name: pickup_location_id
+        tests:
+          - not_null
+
+      - name: dropoff_location_id
+        tests:
+          - not_null
+
+  - name: int_trips_enhanced
+    description: "Data perjalanan yang sudah diperkaya dengan zona dan metrik turunan."
+    columns:
+      - name: avg_speed_mph
+        description: "Kecepatan rata-rata perjalanan dalam mil per jam."
+        tests:
+          - not_null
+
+  - name: fct_trips
+    description: "Tabel fakta utama berisi satu baris per perjalanan."
+    columns:
+
+      - name: dropoff_location_id
+        description: "Lokasi tujuan (FK ke dim_zones)."
+        tests:
+          - relationships:
+              to: ref('dim_zones')
+              field: location_id
+
+  - name: dim_zones
+    description: "Tabel dimensi berisi metadata zona taksi."
+    columns:
+      - name: location_id
+        description: "Primary key dari dimensi zona."
+        tests:
+          - unique
+
+  - name: agg_daily_stats
+    description: "Tabel agregasi harian untuk analisis tren dan KPI."
+    columns:
+      - name: trip_date
+        description: "Tanggal perjalanan (tipe date)."
+        tests:
+          - not_null
+      - name: total_trips
+        tests:
+          - not_null
+      - name: avg_fare
+        tests:
+          - not_null

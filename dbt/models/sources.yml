@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: nyc_taxi
+    schema: main     # DuckDB tidak mengenal database, hanya schema (default: main)
+
+    tables:
+      - name: yellow_tripdata
+        identifier: yellow_tripdata
+        description: "Data mentah perjalanan taksi Yellow Cab NYC bulanan."

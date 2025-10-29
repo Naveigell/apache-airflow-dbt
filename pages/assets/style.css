@@ -1,0 +1,15 @@
+body {
+  background-color: #f4f6f9;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.DateRangePicker, .DateRangePickerInput {
+    width: 100% !important;
+}
+
+.DateRangePicker > div {
+    width: 100% !important;
+}
+
