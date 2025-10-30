@@ -6,7 +6,7 @@ from scripts.send_email import send_email
 
 load_dotenv()
 
-def notify_failure(context):
+def dag_notify_failure(context):
     """
     Sends an email notification when the ingestion DAG fails.
 
@@ -20,12 +20,12 @@ def notify_failure(context):
     None
     """
     send_email(
-        subject="DAG Failure",
+        subject=f"DAG {context['task_instance'].task_id} Failure",
         to=os.environ['MAIL_TO_ADDRESS'],
-        body="DAG failed for the following reason: " + context['reason'] + " with id : " + context['run_id'],
+        body=f"DAG {context['task_instance'].task_id} failed for the following reason: {context['exception']} with id : {context['run_id']} on date : {context['logical_date']}"
     )
 
-def notify_success(context):
+def dag_notify_success(context):
     """
     Sends an email notification when the ingestion DAG completes successfully.
 
@@ -39,7 +39,7 @@ def notify_success(context):
     None
     """
     send_email(
-        subject="DAG Success",
+        subject=f"DAG {context['task_instance'].task_id} Success",
         to=os.environ['MAIL_TO_ADDRESS'],
-        body="DAG completed successfully with id : " + context['run_id'],
+        body=f"DAG {context['task_instance'].task_id} completed successfully with id : {context['dag'].dag_id} on date : {context['logical_date']}",
     )
