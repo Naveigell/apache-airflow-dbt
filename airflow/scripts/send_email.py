@@ -39,6 +39,6 @@ def send_email(to, subject, body):
         server.sendmail(os.environ['MAIL_FROM_NAME'], to, text)
         server.quit()
 
-        print("Email berhasil dikirim!")
+        print("Email sent into : " + to)
     except Exception as e:
         print(f"Error: {e}")

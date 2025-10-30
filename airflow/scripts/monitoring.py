@@ -2,11 +2,39 @@ import os
 from datetime import datetime
 
 import duckdb
+from dotenv import load_dotenv
 
-DB_PATH = "../dbt/nyc_taxi.duckdb"
+from scripts.send_email import send_email
+
+load_dotenv()
+
+DB_PATH              = os.environ['DATABASE_NAME']
 ALERT_THRESHOLD_DROP = 0.8
-SUMMARY_PATH = "./reports/daily_summary.csv"
+SUMMARY_PATH         = os.environ['SUMMARY_PATH'] + '/summary.csv'
 
+def email_anomaly(message):
+    """
+    Send an email alert with a monitoring body message and a custom message.
+
+    Parameters
+    ----------
+    body_message : str
+        Monitoring body message.
+    message : str
+        Custom message to include in the email.
+
+    Returns
+    -------
+    None
+
+    """
+    body = f"Monitoring got anomaly with message : {message}"
+
+    send_email(
+        to=os.environ['MAIL_TO_ADDRESS'],
+        subject="Anomaly Alert",
+        body=body,
+    )
 
 def check_data_freshness():
     """
@@ -29,9 +57,9 @@ def check_data_freshness():
 
     lag_days = (datetime.now() - latest_date).days
     if lag_days > 1:
-        raise ValueError(f"Data not updated! Latest update {lag_days} days ago at ({latest_date})")
-
-    print(f"Data updated, latest {latest_date}")
+        email_anomaly(f"Data not updated! Latest update {lag_days} days ago at ({latest_date})")
+    else:
+        print(f"Data updated, latest {latest_date}")
 
 
 def validate_row_counts():
@@ -51,11 +79,11 @@ def validate_row_counts():
 
     total = df.loc[0, 'total_rows']
     invalid = df.loc[0, 'invalid_fare']
+
     if invalid > 0:
-        raise ValueError(f"Founded {invalid} rows with fare_amount <= 0")
-
-    print(f"Rows count ({total:,} valid count)")
-
+        email_anomaly(f"Founded {invalid} rows with fare_amount <= 0")
+    else:
+        print(f"Rows count ({total:,} valid count)")
 
 
 def compare_with_historical():
@@ -89,9 +117,9 @@ def compare_with_historical():
     ratio = latest / avg_hist if avg_hist > 0 else 1
 
     if ratio < ALERT_THRESHOLD_DROP:
-        raise ValueError(f"Total trip is down: {ratio:.2%} from historical average")
-
-    print(f"Normal trip ({latest} vs average {avg_hist:.0f})")
+        email_anomaly(f"Total trip is down: {ratio:.2%} from historical average")
+    else:
+        print(f"Normal trip ({latest} vs average {avg_hist:.0f})")
 
 
 def generate_daily_summary():
