@@ -1,0 +1,7 @@
+models:
+  - name: daily_anomaly_check
+    description: Model yang berisikan baris data anomali
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: 'COUNT(*) = 0'
+          severity: ERROR

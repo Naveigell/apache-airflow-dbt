@@ -2,6 +2,40 @@ import pandas as pd
 
 
 def validate_file(files):
+    """
+    Validate if the given parquet files have the expected columns.
+
+    Expected columns are:
+        - 'VendorID'
+        - 'tpep_pickup_datetime'
+        - 'tpep_dropoff_datetime'
+        - 'passenger_count'
+        - 'trip_distance'
+        - 'RatecodeID'
+        - 'store_and_fwd_flag'
+        - 'PULocationID'
+        - 'DOLocationID'
+        - 'payment_type'
+        - 'fare_amount'
+        - 'extra'
+        - 'mta_tax'
+        - 'tip_amount'
+        - 'tolls_amount'
+        - 'improvement_surcharge'
+        - 'total_amount'
+        - 'congestion_surcharge'
+        - 'airport_fee'
+
+    Parameters
+    ----------
+    files : list of str
+        List of paths to the parquet files to validate.
+
+    Returns
+    -------
+    bool
+        True if the parquet files have the expected columns, False otherwise.
+    """
     expected_cols = {
         'VendorID', 'tpep_pickup_datetime', 'tpep_dropoff_datetime', 'passenger_count',
         'trip_distance', 'RatecodeID', 'store_and_fwd_flag', 'PULocationID',

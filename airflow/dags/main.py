@@ -30,15 +30,3 @@ with DAG(
     },
 ) as dag:
     pass
-
-validate_file([
-    './airflow/data/raw/yellow_tripdata_2023-01.parquet',
-    './airflow/data/raw/yellow_tripdata_2023-02.parquet',
-    './airflow/data/raw/yellow_tripdata_2023-03.parquet',
-])
-
-save_parquet_into_duckdb([
-    './airflow/data/raw/yellow_tripdata_2023-01.parquet',
-    './airflow/data/raw/yellow_tripdata_2023-02.parquet',
-    './airflow/data/raw/yellow_tripdata_2023-03.parquet',
-], './dbt/nyc_taxi.duckdb', 'yellow_tripdata')
