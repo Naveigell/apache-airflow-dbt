@@ -51,13 +51,14 @@ def save_parquet_into_duckdb(files, db_name, table_name):
     # Pastikan direktori database ada
     os.makedirs(os.path.dirname(db_name), exist_ok=True)
 
-    print(f"Mencoba koneksi ke DuckDB di: {db_name}")
-    conn = duckdb.connect(database=db_name, read_only=False)
+    print(f"Connection to: {db_name}")
 
     for file in files:
 
+        conn = duckdb.connect(database=db_name)
+
         try:
-            print(f"Memuat data dari {file} ke tabel {table_name}...")
+            print(f"Fetch {file} to table {table_name}...")
 
             if mode == 'CREATE':
                 load_query = f"""
@@ -76,15 +77,18 @@ def save_parquet_into_duckdb(files, db_name, table_name):
 
             row_count = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
 
-            print(f"Pemuatan SUKSES. Total {row_count} baris dimuat ke tabel '{table_name}'.")
+            print(f"Loaded data to duckdb, {row_count} loaded to table : '{table_name}'.")
 
         except Exception as e:
-            print(f"Pemuatan ke DuckDB GAGAL: {e}")
+            print(f"Duckdb failed to loaded : {e}")
 
             raise
 
-    conn.close()
-    print("Koneksi DuckDB ditutup.")
+        finally:
+            conn.close()
+
+            print("Connection closed")
+
 
 
 def save_parquet_into_staging(files, db_name, table_name):

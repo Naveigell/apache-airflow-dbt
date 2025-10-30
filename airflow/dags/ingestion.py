@@ -61,7 +61,7 @@ def load():
         os.environ['RAW_FOLDER'] + '/yellow_tripdata_2023-01.parquet',
         os.environ['RAW_FOLDER'] + '/yellow_tripdata_2023-02.parquet',
         os.environ['RAW_FOLDER'] + '/yellow_tripdata_2023-03.parquet',
-    ], os.environ['DATABASE_NAME'], os.environ['DATABASE_NAME'])
+    ], os.environ['DATABASE_NAME'], os.environ['DATABASE_TABLE'])
 
 with DAG(
     dag_id='nyc_taxi_ingestion',

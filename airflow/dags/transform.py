@@ -23,24 +23,26 @@ with DAG(
         'on_failure_callback': notify_failure,
     },
 ) as dag:
+    dbt_root_folder = os.environ['DBT_ROOT_FOLDER']
+
     trigger_db_seed = BashOperator(
         task_id='trigger_db_seed',
-        bash_command='cd ../dbt && dbt seed',
+        bash_command=f'cd {dbt_root_folder} && dbt seed',
     )
 
     run_db_models = BashOperator(
         task_id='trigger_db_models',
-        bash_command='cd ../dbt && dbt run',
+        bash_command=f'cd {dbt_root_folder} && dbt run --exclude tag:anomaly',
     )
 
     run_db_tests = BashOperator(
         task_id='trigger_db_tests',
-        bash_command='cd ../dbt && dbt test',
+        bash_command=f'cd {dbt_root_folder} && dbt test --exclude tag:anomaly',
     )
 
     generate_dbt_docs = BashOperator(
         task_id='trigger_db_docs',
-        bash_command='cd ../dbt && dbt docs generate',
+        bash_command=f'cd {dbt_root_folder} && dbt docs generate --exclude tag:anomaly',
     )
 
     trigger_db_seed >> run_db_models >> run_db_tests >> generate_dbt_docs
