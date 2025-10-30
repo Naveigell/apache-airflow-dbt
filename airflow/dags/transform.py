@@ -13,7 +13,7 @@ from scripts.notify import notify_failure
 
 with DAG(
     dag_id='nyc_taxi_transform',
-    schedule='0 6 * * *',
+    schedule=os.environ['DAG_TRANSFORM_SCHEDULE'],
     start_date=datetime(2025, 1, 1),
     catchup=False,
     tags={'example'},

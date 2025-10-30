@@ -65,7 +65,7 @@ def load():
 
 with DAG(
     dag_id='nyc_taxi_ingestion',
-    schedule='@monthly',
+    schedule=os.environ['DAG_INGESTION_SCHEDULE'],
     start_date=datetime(2025, 1, 1),
     catchup=False,
     tags={'example'},

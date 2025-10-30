@@ -15,7 +15,7 @@ import scripts.monitoring as monitoring
 
 with DAG(
     dag_id='nyc_taxi_monitor',
-    schedule='0 */6 * * *',
+    schedule=os.environ['DAG_MONITOR_SCHEDULE'],
     start_date=datetime(2025, 1, 1),
     catchup=False,
     tags={'example'},
