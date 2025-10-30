@@ -1,9 +1,14 @@
+import os
+
 import duckdb
 from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
 import dash_bootstrap_components as dbc
+from dotenv import load_dotenv
 
-con = duckdb.connect("./dbt/nyc_taxi.duckdb")
+load_dotenv()
+
+con = duckdb.connect(os.environ['DATABASE_NAME'])
 
 date_range = con.execute("""
     SELECT MIN(DATE(pickup_datetime)) AS min_date,
@@ -96,9 +101,8 @@ app.layout = html.Div([
     ]
 )
 def update_dashboard(start_date, end_date, selected_zones):
-    con = duckdb.connect("./dbt/nyc_taxi.duckdb", read_only=True)
+    con = duckdb.connect(os.environ['DATABASE_NAME'])
 
-    # Filter Zona (opsional)
     zone_filter = ""
     if selected_zones:
         zone_list = "', '".join(selected_zones)
@@ -128,9 +132,6 @@ def update_dashboard(start_date, end_date, selected_zones):
         ORDER BY trip_date
     """).df()
 
-    # ======================
-    # Top Zones
-    # ======================
     df_top_zones = con.execute(f"""
         SELECT
             dz.zone AS pickup_zone,
@@ -145,9 +146,6 @@ def update_dashboard(start_date, end_date, selected_zones):
         LIMIT 10
     """).df()
 
-    # ======================
-    # Heatmap
-    # ======================
     df_heatmap = con.execute(f"""
         SELECT
             dz.zone AS pickup_zone,
