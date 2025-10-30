@@ -1,8 +1,14 @@
+import os
+import sys
 from datetime import datetime, timedelta
 
 from airflow.providers.standard.operators.bash import BashOperator
 
 from airflow import DAG
+
+sys.path.append('../')
+sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)) + '/../')
+
 from scripts.notify import notify_failure
 
 with DAG(

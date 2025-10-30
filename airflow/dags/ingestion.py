@@ -1,9 +1,13 @@
 import os
+import sys
 from datetime import timedelta, datetime
 
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.sdk import DAG
 from dotenv import load_dotenv
+
+sys.path.append('../')
+sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)) + '/../')
 
 from scripts.database   import save_parquet_into_duckdb
 from scripts.notify     import notify_failure
