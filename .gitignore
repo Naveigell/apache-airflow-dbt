@@ -2,4 +2,4 @@ log.txt
 .env
 .venv
 .idea
-airflow/scripts/__pycache__/*
+*.pyc
