@@ -14,7 +14,7 @@ from scripts.notify import notify_failure, notify_success
 import scripts.monitoring as monitoring
 
 with DAG(
-    dag_id='nyc_taxi_transform',
+    dag_id='nyc_taxi_monitor',
     schedule='0 */6 * * *',
     start_date=datetime(2025, 1, 1),
     catchup=False,
